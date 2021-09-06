@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_img"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context=".PlayerActivity"
+    android:layoutDirection="ltr">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_player_song_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text="Song Name"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            android:textSize="22sp"
+            android:textStyle="italic" />
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/music" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_marginTop="10dp">
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/seekbar"
+                android:layout_marginTop="20dp"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_margin="0dp"
+                android:layout_marginBottom="0dp"
+                android:outlineSpotShadowColor="#ffff0000" />
+
+            <TextView
+                android:id="@+id/txt_song_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="false"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="20dp"
+                android:layout_toStartOf="@id/seekbar"
+                android:text="0:10"
+                android:textColor="#FFF"
+                android:textSize="14sp"
+
+                />
+
+            <TextView
+                android:id="@+id/txt_song_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="false"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@id/seekbar"
+                android:text="4:10"
+                android:textColor="#FFF"
+                android:textSize="14sp"
+
+                />
+
+        </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical"
+        >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:id="@+id/btn_play"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_pause"
+            android:layout_marginTop="13dp"
+            />
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toEndOf="@id/btn_play"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_next"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="5dp"
+            />
+        <Button
+            android:id="@+id/btn_prev"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toStartOf="@id/btn_play"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_prev"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="6dp"
+
+            />
+        <Button
+            android:id="@+id/btn_fast_f"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toEndOf="@id/btn_next"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_fast_forward"
+            android:layout_marginTop="17dp"
+            android:layout_marginStart="15dp"
+            />
+        <Button
+            android:id="@+id/btn_fast_r"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toStartOf="@id/btn_prev"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_fast_rewind"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="15dp"
+            />
+        <com.gauravk.audiovisualizer.visualizer.BarVisualizer
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/visualizer"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_height="70dp"
+            custom:avDensity="0.5"
+            custom:avType="outline"
+            custom:avWidth="4dp"
+            custom:avColor="@color/colorAccent"
+            android:outlineSpotShadowColor="@color/colorPrimaryDark"
+            android:outlineAmbientShadowColor="@color/colorAccent"
+            custom:avSpeed="normal"/>
+    </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

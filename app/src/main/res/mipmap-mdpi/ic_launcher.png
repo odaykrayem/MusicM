@@ -1,0 +1,70 @@
+package com.example.admin.utils;
+
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.admin.Models.OperationModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ *  Once app is installed, you have to enable the service in Accessibility Settings (Setting->Accessibility Setting -> YourAppName).
+ */
+public class USSDService extends AccessibilityService {
+
+    public static String TAG = USSDService.class.getSimpleName();
+    private int operation_id;
+    RequestQueue queue;
+
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        Log.d(TAG, "onAccessibilityEvent");
+
+        AccessibilityNodeInfo source = event.getSource();
+        /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {
+            return;
+        }
+        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && (source == null || !source.getClassName().equals("android.widget.TextView"))) {
+            return;
+        }
+        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && TextUtils.isEmpty(source.getText())) {
+            return;
+        }
+
+        List<CharSequence> eventText;
+
+        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            eventText = event.getText();
+        } else {
+            eventText = Collections.singletonList(source.getText());
+        }
+
+        String text = processUSSDText(eventText);
+
+        if( TextUtils.isEmpty(text) ) return;
+
+        // Close dialog
+        performGlobalAction(GLOBAL_ACTION_BACK); // This wo
