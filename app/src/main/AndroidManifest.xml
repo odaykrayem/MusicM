@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
@@ -12,15 +12,23 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".PlayerActivity"></activity>
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true">
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>        <activity android:name=".PlayerActivity" />
+        <activity android:name=".MainActivity">
+
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4268247002060118~8323443736"/>
+
     </application>
 
 </manifest>

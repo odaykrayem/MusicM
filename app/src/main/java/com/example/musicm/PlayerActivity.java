@@ -2,7 +2,6 @@ package com.example.musicm;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -11,24 +10,27 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    Button btnPlay, btnPause, btnNext, btnPrev, btnFastF, btnFastR;
+    Button btnPlay, btnNext, btnPrev, btnFastF, btnFastR, btnRepeat;
     TextView txtSongName, txtSongStart, txtSongStop;
     ImageView playerImg;
     SeekBar seekBar;
@@ -43,13 +45,20 @@ public class PlayerActivity extends AppCompatActivity {
 
     AnimatorSet animatorSet = new AnimatorSet();
 
+    private static boolean repeat = false;
+
+    private InterstitialAd mInterstitialAd ;
+    private boolean adSt = false;
+    private boolean homeSt = false;
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
             stopAnimation();
             btnPlay.setBackgroundResource(R.drawable.ic_play);
-            mediaPlayer.pause();
+//            mediaPlayer.pause();
+//            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -78,6 +87,7 @@ public class PlayerActivity extends AppCompatActivity {
         btnFastF = findViewById(R.id.btn_fast_f);
         btnFastR = findViewById(R.id.btn_fast_r);
 
+        btnRepeat=  findViewById(R.id.btn_repeat);
         txtSongName = findViewById(R.id.txt_player_song_name);
         txtSongStart = findViewById(R.id.txt_song_start);
         txtSongStop = findViewById(R.id.txt_song_stop);
@@ -172,6 +182,10 @@ public class PlayerActivity extends AppCompatActivity {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mInterstitialAd != null && adSt == false){
+                    mInterstitialAd.show(PlayerActivity.this);
+                }
+                adSt= false;
                 if (mediaPlayer.isPlaying()) {
                     btnPlay.setBackgroundResource(R.drawable.ic_play);
                     mediaPlayer.pause();
@@ -182,13 +196,30 @@ public class PlayerActivity extends AppCompatActivity {
                     startAnimation(playerImg);
                 }
 
+
             }
         });
         // on song complete listener
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                btnNext.performClick();
+                if(repeat){
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    Uri u = Uri.parse(mySongs.get(position).toString());
+                    mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
+                    sName = mySongs.get(position).getName();
+                    txtSongName.setText(sName);
+                    mediaPlayer.start();
+                    btnPlay.setBackgroundResource(R.drawable.ic_pause);
+                    startAnimation(playerImg);
+                    int audioSessionId = mediaPlayer.getAudioSessionId();
+                    if(audioSessionId != -1){
+                        visualizer.setAudioSessionId(audioSessionId);
+                    }
+                }else{
+                    btnNext.performClick();
+                }
             }
         });
 
@@ -256,6 +287,75 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             }
         });
+        btnRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                repeat = !repeat;
+                System.out.println(repeat);
+
+                if ((repeat == true)) {
+                    btnRepeat.setBackgroundResource(R.drawable.ic_repeat);
+                } else {
+                    btnRepeat.setBackgroundResource(R.drawable.ic_repeat_n_enabled);
+                }
+
+
+            }
+        });
+
+        AdRequest interstatialAdRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", interstatialAdRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        //handle interstatialAd events
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when fullscreen content is dismissed
+                                PlayerActivity.this.mInterstitialAd = null;
+                                Log.e("TAG", "The ad was dismissed.");
+
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                mInterstitialAd = null;
+                                Log.e("TAG", "The ad failed to show.");
+
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+
+                                Log.e("TAG", "The ad was shown.");
+                            }
+                        });
+
+                        Log.e("ad load", "onAdLoaded");
+
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.e("ad error", loadAdError.getMessage());
+
+                        mInterstitialAd = null;
+
+                    }
+                });
+        System.out.println("=========================="+mInterstitialAd);
+
     }
 
     public void startAnimation(View view) {
@@ -283,5 +383,20 @@ public class PlayerActivity extends AppCompatActivity {
         }
         time += sec;
         return time;
+    }
+
+    @Override
+    protected void onPause() {
+        adSt = true;
+        if (mediaPlayer.isPlaying()) {
+            btnPlay.setBackgroundResource(R.drawable.ic_play);
+            mediaPlayer.pause();
+            stopAnimation();
+        } else {
+            btnPlay.setBackgroundResource(R.drawable.ic_pause);
+            mediaPlayer.start();
+            startAnimation(playerImg);
+        }
+        super.onPause();
     }
 }

@@ -32,12 +32,30 @@
             android:textSize="22sp"
             android:textStyle="italic" />
 
-        <ImageView
-            android:id="@+id/image_view"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/music" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="260dp">
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:src="@drawable/music"
+                android:layout_centerInParent="true"/>
+
+            <Button
+                android:id="@+id/btn_repeat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/ic_repeat_n_enabled"
+                android:enabled="true"
+                android:layout_toEndOf="@id/image_view"
+                android:layout_alignBottom="@id/image_view"
+                />
+        </RelativeLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"

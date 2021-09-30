@@ -1,7 +1,6 @@
 package com.example.musicm;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,20 +8,21 @@ import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.karumi.dexter.listener.single.PermissionListener;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +32,80 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     String[] items;
 
+    AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listViewSong);
         runtimePermission();
+
+
+        //initialize for ads
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        //bind view and load banner ads for it
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        //set listener for adView to make some actions
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        if(mAdView != null){
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mAdView != null){
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mAdView != null){
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 
     public void runtimePermission() {
@@ -89,11 +157,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String songName = (String) listView.getItemAtPosition(position);
-                startActivity(new Intent(getApplicationContext(), PlayerActivity.class)
-                        .putExtra("songs", mySongs)
-                        .putExtra("songName", songName)
-                        .putExtra("pos", position));
-            }
+
+                    startActivity(new Intent(getApplicationContext(), PlayerActivity.class)
+                            .putExtra("songs", mySongs)
+                            .putExtra("songName", songName)
+                            .putExtra("pos", position));
+
+
+                }
         });
     }
 

@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="#ffffe0fd">
+    android:background="#ffffe0fd"
+    tools:context=".MainActivity">
 
 
-    <ListView
-        android:id="@+id/listViewSong"
+    <LinearLayout
+        android:id="@+id/linear1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="10.0sp"
-        android:padding="8dp">
+        android:orientation="vertical"
+        android:layout_above="@id/linear2">
+        <ListView
+            android:id="@+id/listViewSong"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10.0sp"
+            android:padding="8dp">   </ListView>
+    </LinearLayout>
 
-    </ListView>
 
+    <LinearLayout
+        android:id="@+id/linear2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/listViewSong"
+            android:layout_gravity="center"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+    </LinearLayout>
 </RelativeLayout>
