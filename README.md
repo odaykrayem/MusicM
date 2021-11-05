@@ -7,7 +7,8 @@ MusicM is a simple music and audio player app
 - PlayerActivity contains simple rotation animation
 - PlayerActivity contains bottom visualizer.
 
+</br>
 ![alt text](https://github.com/odaykrayem/MusicM/blob/master/SongsListView.jpg)
-<br>
+</br>
 ![alt text](https://github.com/odaykrayem/MusicM/blob/master/MusicPlayer.png)
 
